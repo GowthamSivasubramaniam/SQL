@@ -1,0 +1,76 @@
+Queries used and their output
+========================================================================================
+create database Task;
+Query OK, 1 row affected (0.04 sec)
+========================================================================================
+
+use Task
+Database changed
+========================================================================================
+
+Create table student ( rollno INT PRIMARY KEY , Department varchar(20) , Class char);
+Query OK, 0 rows affected (0.02 sec)
+========================================================================================
+
+alter table student add Name varchar(20);
+Query OK, 0 rows affected (0.02 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+========================================================================================
+
+insert into student values (1,"CSE" , 'A',"Gowtham"),(2,"CSE" , 'A',"Mano");
+Query OK, 2 rows affected (0.01 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+========================================================================================
+
+mysql> select * from student;
++--------+------------+-------+---------+
+| rollno | Department | Class | Name    |
++--------+------------+-------+---------+
+|      1 | CSE        | A     | Gowtham |
+|      2 | CSE        | A     | Mano    |
++--------+------------+-------+---------+
+2 rows in set (0.00 sec)
+========================================================================================
+
+insert into student values (3,"CSE" , 'A',"Gowtham"),(4,"CSE" , 'A',"Mani"),(5,"CSE" , 'A',"Gokul"),(6,"CSE" , 'B',"Muthu") ;
+Query OK, 4 rows affected (0.01 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+========================================================================================
+
+mysql> select * from student;
++--------+------------+-------+---------+
+| rollno | Department | Class | Name    |
++--------+------------+-------+---------+
+|      1 | CSE        | A     | Gowtham |
+|      2 | CSE        | A     | Mano    |
+|      3 | CSE        | A     | Gowtham |
+|      4 | CSE        | A     | Mani    |
+|      5 | CSE        | A     | Gokul   |
+|      6 | CSE        | B     | Muthu   |
++--------+------------+-------+---------+
+6 rows in set (0.00 sec)
+========================================================================================
+
+mysql> select * from student where Class = 'A';
++--------+------------+-------+---------+
+| rollno | Department | Class | Name    |
++--------+------------+-------+---------+
+|      1 | CSE        | A     | Gowtham |
+|      2 | CSE        | A     | Mano    |
+|      3 | CSE        | A     | Gowtham |
+|      4 | CSE        | A     | Mani    |
+|      5 | CSE        | A     | Gokul   |
++--------+------------+-------+---------+
+5 rows in set (0.00 sec)
+
+mysql> select * from student where Class = 'A' order by Name;
++--------+------------+-------+---------+
+| rollno | Department | Class | Name    |
++--------+------------+-------+---------+
+|      5 | CSE        | A     | Gokul   |
+|      1 | CSE        | A     | Gowtham |
+|      3 | CSE        | A     | Gowtham |
+|      4 | CSE        | A     | Mani    |
+|      2 | CSE        | A     | Mano    |
++--------+------------+-------+---------+
+5 rows in set (0.00 sec)
