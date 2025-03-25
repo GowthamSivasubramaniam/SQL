@@ -1,0 +1,67 @@
+Create table StudentRegister ( rollno varchar(10)  PRIMARY KEY , Department varchar(20) , Class char);
+Query OK, 0 rows affected (0.07 sec)
+===========================================================================================================
+
+alter table StudentRegister add Name varchar(20); 
+Query OK, 0 rows affected (0.02 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+===========================================================================================================
+
+insert into StudentRegister values 
+("21CSR058","CSE" , 'A',"Gowtham"),
+("21CSR0109","CSE" , 'A',"Mani"),
+("21CSR046","CSE" , 'A',"Gokul"),
+("21CSR120","CSE" , 'B',"Muthu"),
+ ("21ECR058","ECE" , 'A',"Gowtham"),
+ ("21ECR0109","ECE" , 'A',"Mani"),
+ ("21ECR046","ECE" , 'A',"Gokul"),
+ ("21ECR120","ECE" , 'B',"Muthu");
+Query OK, 8 rows affected (0.01 sec)
+Records: 8  Duplicates: 0  Warnings: 0
+===========================================================================================================
+
+ select * from StudentRegister;
++-----------+------------+-------+---------+
+| rollno    | Department | Class | Name    |
++-----------+------------+-------+---------+
+| 21CSR0109 | CSE        | A     | Mani    |
+| 21CSR046  | CSE        | A     | Gokul   |
+| 21CSR058  | CSE        | A     | Gowtham |
+| 21CSR120  | CSE        | B     | Muthu   |
+| 21ECR0109 | ECE        | A     | Mani    |
+| 21ECR046  | ECE        | A     | Gokul   |
+| 21ECR058  | ECE        | A     | Gowtham |
+| 21ECR120  | ECE        | B     | Muthu   |
++-----------+------------+-------+---------+
+8 rows in set (0.01 sec)
+===========================================================================================================
+
+select count(Rollno) as department_strength from StudentRegister group by Department;
++---------------------+
+| department_strength |
++---------------------+
+|                   4 |
+|                   4 |
++---------------------+
+
+===========================================================================================================
+select count(Rollno) as department_strength,Department from StudentRegister group by Department;
++---------------------+------------+
+| department_strength | Department |
++---------------------+------------+
+|                   4 | CSE        |
+|                   4 | ECE        |
++---------------------+------------+
+2 rows in set (0.00 sec)
+===========================================================================================================
+
+ select count(Rollno) as class_strength,Department, Class from StudentRegister group by Department,
+ Class having Class='A';
++----------------+------------+-------+
+| class_strength | Department | Class |
++----------------+------------+-------+
+|              3 | CSE        | A     |
+|              3 | ECE        | A     |
++----------------+------------+-------+
+2 rows in set (0.01 sec)
+===========================================================================================================
