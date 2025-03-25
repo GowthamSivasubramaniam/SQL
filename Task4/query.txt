@@ -1,0 +1,216 @@
+create table Marks ( rollno varchar(10) , Subject varchar(20), Marks int );
+Query OK, 0 rows affected (0.03 sec)
+==============================================================================================
+alter table marks add constraint Foreign key (rollno) References StudentRegister(rollno);
+Query OK, 0 rows affected (0.03 sec)
+
+==============================================================================================
+Insert into marks values ("21CSR058" , "maths",100), ("21CSR058" , "cs",100), ("21CSR058" , "physics",97), 
+("21CSR058" , "DBMS",98), ("21CSR058" , "DS",100),("21CSR120" , "maths",100),
+("21CSR120" , "cs",100),("21CSR120" , "physics",94),("21CSR120" , "DBMS",98),
+("21CSR120" , "DBMS",98);
+Query OK, 10 rows affected (0.01 sec)
+Records: 10  Duplicates: 0  Warnings: 0
+==============================================================================================
+select * from Marks;
++----------+---------+-------+
+| rollno   | Subject | Marks |
++----------+---------+-------+
+| 21CSR058 | maths   |   100 |
+| 21CSR058 | cs      |   100 |
+| 21CSR058 | physics |    97 |
+| 21CSR058 | DBMS    |    98 |
+| 21CSR058 | DS      |   100 |
+| 21CSR120 | maths   |   100 |
+| 21CSR120 | cs      |   100 |
+| 21CSR120 | physics |    94 |
+| 21CSR120 | DBMS    |    98 |
+| 21CSR120 | DBMS    |    98 |
++----------+---------+-------+
+10 rows in set (0.01 sec)
+==============================================================================================
+
+mysql> DELETE FROM Marks WHERE rollno = "21CSR120" and Subject= "DBMS";
+Query OK, 2 rows affected (0.01 sec)
+
+==============================================================================================
+select * from Marks;
++----------+---------+-------+
+| rollno   | Subject | Marks |
++----------+---------+-------+
+| 21CSR058 | maths   |   100 |
+| 21CSR058 | cs      |   100 |
+| 21CSR058 | physics |    97 |
+| 21CSR058 | DBMS    |    98 |
+| 21CSR058 | DS      |   100 |
+| 21CSR120 | maths   |   100 |
+| 21CSR120 | cs      |   100 |
+| 21CSR120 | physics |    94 |
++----------+---------+-------+
+8 rows in set (0.00 sec)
+==============================================================================================
+
+
+select T1.rollno,Class,Subject,Marks from StudentRegister as T1 inner join Marks as T2 on T1.rollno = T2.rollno ;
++----------+-------+---------+-------+
+| rollno   | Class | Subject | Marks |
++----------+-------+---------+-------+
+| 21CSR058 | A     | maths   |   100 |
+| 21CSR058 | A     | cs      |   100 |
+| 21CSR058 | A     | physics |    97 |
+| 21CSR058 | A     | DBMS    |    98 |
+| 21CSR058 | A     | DS      |   100 |
+| 21CSR120 | B     | maths   |   100 |
+| 21CSR120 | B     | cs      |   100 |
+| 21CSR120 | B     | physics |    94 |
++----------+-------+---------+-------+
+8 rows in set (0.01 sec)
+==============================================================================================
+select T1.rollno,Class,Subject,Marks from StudentRegister as T1 natural join  Marks ;
++----------+-------+---------+-------+
+| rollno   | Class | Subject | Marks |
++----------+-------+---------+-------+
+| 21CSR058 | A     | maths   |   100 |
+| 21CSR058 | A     | cs      |   100 |
+| 21CSR058 | A     | physics |    97 |
+| 21CSR058 | A     | DBMS    |    98 |
+| 21CSR058 | A     | DS      |   100 |
+| 21CSR120 | B     | maths   |   100 |
+| 21CSR120 | B     | cs      |   100 |
+| 21CSR120 | B     | physics |    94 |
++----------+-------+---------+-------+
+8 rows in set (0.00 sec)
+
+mysql> select *  from StudentRegister as T1 natural left join  Marks ;
++-----------+------------+-------+---------+---------+-------+
+| rollno    | Department | Class | Name    | Subject | Marks |
++-----------+------------+-------+---------+---------+-------+
+| 21CSR0109 | CSE        | A     | Mani    | NULL    |  NULL |
+| 21CSR046  | CSE        | A     | Gokul   | NULL    |  NULL |
+| 21CSR058  | CSE        | A     | Gowtham | maths   |   100 |
+| 21CSR058  | CSE        | A     | Gowtham | cs      |   100 |
+| 21CSR058  | CSE        | A     | Gowtham | physics |    97 |
+| 21CSR058  | CSE        | A     | Gowtham | DBMS    |    98 |
+| 21CSR058  | CSE        | A     | Gowtham | DS      |   100 |
+| 21CSR120  | CSE        | B     | Muthu   | maths   |   100 |
+| 21CSR120  | CSE        | B     | Muthu   | cs      |   100 |
+| 21CSR120  | CSE        | B     | Muthu   | physics |    94 |
+| 21ECR0109 | ECE        | A     | Mani    | NULL    |  NULL |
+| 21ECR046  | ECE        | A     | Gokul   | NULL    |  NULL |
+| 21ECR058  | ECE        | A     | Gowtham | NULL    |  NULL |
+| 21ECR120  | ECE        | B     | Muthu   | NULL    |  NULL |
++-----------+------------+-------+---------+---------+-------+
+14 rows in set (0.01 sec)
+==============================================================================================
+select *  from StudentRegister as T1 left join  Marks T2 on T1.rollno = T2.rollno;
++-----------+------------+-------+---------+----------+---------+-------+
+| rollno    | Department | Class | Name    | rollno   | Subject | Marks |
++-----------+------------+-------+---------+----------+---------+-------+
+| 21CSR0109 | CSE        | A     | Mani    | NULL     | NULL    |  NULL |
+| 21CSR046  | CSE        | A     | Gokul   | NULL     | NULL    |  NULL |
+| 21CSR058  | CSE        | A     | Gowtham | 21CSR058 | maths   |   100 |
+| 21CSR058  | CSE        | A     | Gowtham | 21CSR058 | cs      |   100 |
+| 21CSR058  | CSE        | A     | Gowtham | 21CSR058 | physics |    97 |
+| 21CSR058  | CSE        | A     | Gowtham | 21CSR058 | DBMS    |    98 |
+| 21CSR058  | CSE        | A     | Gowtham | 21CSR058 | DS      |   100 |
+| 21CSR120  | CSE        | B     | Muthu   | 21CSR120 | maths   |   100 |
+| 21CSR120  | CSE        | B     | Muthu   | 21CSR120 | cs      |   100 |
+| 21CSR120  | CSE        | B     | Muthu   | 21CSR120 | physics |    94 |
+| 21ECR0109 | ECE        | A     | Mani    | NULL     | NULL    |  NULL |
+| 21ECR046  | ECE        | A     | Gokul   | NULL     | NULL    |  NULL |
+| 21ECR058  | ECE        | A     | Gowtham | NULL     | NULL    |  NULL |
+| 21ECR120  | ECE        | B     | Muthu   | NULL     | NULL    |  NULL |
++-----------+------------+-------+---------+----------+---------+-------+
+14 rows in set (0.00 sec)
+
+==============================================================================================
+
+select *  from StudentRegister as T1 natural Right join  Marks ;
++----------+---------+-------+------------+-------+---------+
+| rollno   | Subject | Marks | Department | Class | Name    |
++----------+---------+-------+------------+-------+---------+
+| 21CSR058 | maths   |   100 | CSE        | A     | Gowtham |
+| 21CSR058 | cs      |   100 | CSE        | A     | Gowtham |
+| 21CSR058 | physics |    97 | CSE        | A     | Gowtham |
+| 21CSR058 | DBMS    |    98 | CSE        | A     | Gowtham |
+| 21CSR058 | DS      |   100 | CSE        | A     | Gowtham |
+| 21CSR120 | maths   |   100 | CSE        | B     | Muthu   |
+| 21CSR120 | cs      |   100 | CSE        | B     | Muthu   |
+| 21CSR120 | physics |    94 | CSE        | B     | Muthu   |
++----------+---------+-------+------------+-------+---------+
+8 rows in set (0.01 sec)
+
+==============================================================================================
+
+select *  from StudentRegister as T1 cross join  Marks as T2  ;
++-----------+------------+-------+---------+----------+---------+-------+
+| rollno    | Department | Class | Name    | rollno   | Subject | Marks |
++-----------+------------+-------+---------+----------+---------+-------+
+| 21ECR120  | ECE        | B     | Muthu   | 21CSR058 | maths   |   100 |
+| 21ECR058  | ECE        | A     | Gowtham | 21CSR058 | maths   |   100 |
+| 21ECR046  | ECE        | A     | Gokul   | 21CSR058 | maths   |   100 |
+| 21ECR0109 | ECE        | A     | Mani    | 21CSR058 | maths   |   100 |
+| 21CSR120  | CSE        | B     | Muthu   | 21CSR058 | maths   |   100 |
+| 21CSR058  | CSE        | A     | Gowtham | 21CSR058 | maths   |   100 |
+| 21CSR046  | CSE        | A     | Gokul   | 21CSR058 | maths   |   100 |
+| 21CSR0109 | CSE        | A     | Mani    | 21CSR058 | maths   |   100 |
+| 21ECR120  | ECE        | B     | Muthu   | 21CSR058 | cs      |   100 |
+| 21ECR058  | ECE        | A     | Gowtham | 21CSR058 | cs      |   100 |
+| 21ECR046  | ECE        | A     | Gokul   | 21CSR058 | cs      |   100 |
+| 21ECR0109 | ECE        | A     | Mani    | 21CSR058 | cs      |   100 |
+| 21CSR120  | CSE        | B     | Muthu   | 21CSR058 | cs      |   100 |
+| 21CSR058  | CSE        | A     | Gowtham | 21CSR058 | cs      |   100 |
+| 21CSR046  | CSE        | A     | Gokul   | 21CSR058 | cs      |   100 |
+| 21CSR0109 | CSE        | A     | Mani    | 21CSR058 | cs      |   100 |
+| 21ECR120  | ECE        | B     | Muthu   | 21CSR058 | physics |    97 |
+| 21ECR058  | ECE        | A     | Gowtham | 21CSR058 | physics |    97 |
+| 21ECR046  | ECE        | A     | Gokul   | 21CSR058 | physics |    97 |
+| 21ECR0109 | ECE        | A     | Mani    | 21CSR058 | physics |    97 |
+| 21CSR120  | CSE        | B     | Muthu   | 21CSR058 | physics |    97 |
+| 21CSR058  | CSE        | A     | Gowtham | 21CSR058 | physics |    97 |
+| 21CSR046  | CSE        | A     | Gokul   | 21CSR058 | physics |    97 |
+| 21CSR0109 | CSE        | A     | Mani    | 21CSR058 | physics |    97 |
+| 21ECR120  | ECE        | B     | Muthu   | 21CSR058 | DBMS    |    98 |
+| 21ECR058  | ECE        | A     | Gowtham | 21CSR058 | DBMS    |    98 |
+| 21ECR046  | ECE        | A     | Gokul   | 21CSR058 | DBMS    |    98 |
+| 21ECR0109 | ECE        | A     | Mani    | 21CSR058 | DBMS    |    98 |
+| 21CSR120  | CSE        | B     | Muthu   | 21CSR058 | DBMS    |    98 |
+| 21CSR058  | CSE        | A     | Gowtham | 21CSR058 | DBMS    |    98 |
+| 21CSR046  | CSE        | A     | Gokul   | 21CSR058 | DBMS    |    98 |
+| 21CSR0109 | CSE        | A     | Mani    | 21CSR058 | DBMS    |    98 |
+| 21ECR120  | ECE        | B     | Muthu   | 21CSR058 | DS      |   100 |
+| 21ECR058  | ECE        | A     | Gowtham | 21CSR058 | DS      |   100 |
+| 21ECR046  | ECE        | A     | Gokul   | 21CSR058 | DS      |   100 |
+| 21ECR0109 | ECE        | A     | Mani    | 21CSR058 | DS      |   100 |
+| 21CSR120  | CSE        | B     | Muthu   | 21CSR058 | DS      |   100 |
+| 21CSR058  | CSE        | A     | Gowtham | 21CSR058 | DS      |   100 |
+| 21CSR046  | CSE        | A     | Gokul   | 21CSR058 | DS      |   100 |
+| 21CSR0109 | CSE        | A     | Mani    | 21CSR058 | DS      |   100 |
+| 21ECR120  | ECE        | B     | Muthu   | 21CSR120 | maths   |   100 |
+| 21ECR058  | ECE        | A     | Gowtham | 21CSR120 | maths   |   100 |
+| 21ECR046  | ECE        | A     | Gokul   | 21CSR120 | maths   |   100 |
+| 21ECR0109 | ECE        | A     | Mani    | 21CSR120 | maths   |   100 |
+| 21CSR120  | CSE        | B     | Muthu   | 21CSR120 | maths   |   100 |
+| 21CSR058  | CSE        | A     | Gowtham | 21CSR120 | maths   |   100 |
+| 21CSR046  | CSE        | A     | Gokul   | 21CSR120 | maths   |   100 |
+| 21CSR0109 | CSE        | A     | Mani    | 21CSR120 | maths   |   100 |
+| 21ECR120  | ECE        | B     | Muthu   | 21CSR120 | cs      |   100 |
+| 21ECR058  | ECE        | A     | Gowtham | 21CSR120 | cs      |   100 |
+| 21ECR046  | ECE        | A     | Gokul   | 21CSR120 | cs      |   100 |
+| 21ECR0109 | ECE        | A     | Mani    | 21CSR120 | cs      |   100 |
+| 21CSR120  | CSE        | B     | Muthu   | 21CSR120 | cs      |   100 |
+| 21CSR058  | CSE        | A     | Gowtham | 21CSR120 | cs      |   100 |
+| 21CSR046  | CSE        | A     | Gokul   | 21CSR120 | cs      |   100 |
+| 21CSR0109 | CSE        | A     | Mani    | 21CSR120 | cs      |   100 |
+| 21ECR120  | ECE        | B     | Muthu   | 21CSR120 | physics |    94 |
+| 21ECR058  | ECE        | A     | Gowtham | 21CSR120 | physics |    94 |
+| 21ECR046  | ECE        | A     | Gokul   | 21CSR120 | physics |    94 |
+| 21ECR0109 | ECE        | A     | Mani    | 21CSR120 | physics |    94 |
+| 21CSR120  | CSE        | B     | Muthu   | 21CSR120 | physics |    94 |
+| 21CSR058  | CSE        | A     | Gowtham | 21CSR120 | physics |    94 |
+| 21CSR046  | CSE        | A     | Gokul   | 21CSR120 | physics |    94 |
+| 21CSR0109 | CSE        | A     | Mani    | 21CSR120 | physics |    94 |
++-----------+------------+-------+---------+----------+---------+-------+
+64 rows in set (0.01 sec)
+
+==============================================================================================
