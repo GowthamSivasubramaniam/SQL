@@ -1,0 +1,333 @@
+create table Orders ( OID int Primary Key , CID int , PID int , date Date);
+Query OK, 0 rows affected (0.02 sec)
+
+=========================================================================================
+
+create table Product ( PID int primary key , productName varchar(10) , Price int);
+Query OK, 0 rows affected (0.01 sec)
+
+=========================================================================================
+
+Alter table Product add Quantity int;
+Query OK, 0 rows affected (0.01 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+=========================================================================================
+
+Alter table Orders add constraint  Foreign key (CID)  References Customer(CID);
+Query OK, 0 rows affected (0.06 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+=========================================================================================
+
+Alter table Orders add constraint  Foreign key (PID)  References Product (PID);
+Query OK, 0 rows affected (0.03 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+=========================================================================================
+
+Alter table Orders  add Quantity int;
+Query OK, 0 rows affected (0.05 sec)
+
+=========================================================================================
+
+mysql> insert into Product values 
+    -> (1, "m1 air" ,60000,80),
+    -> (2, "m2 air" ,90000,60),
+    -> (3, "m3 air" ,110000,120);
+Query OK, 3 rows affected (0.01 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+=========================================================================================
+
+mysql> insert into customer values
+    -> (1,"Gowtham","9080529427"),
+    -> (2,"Muthu","9952699870"),
+    -> (3,"Gopi","8907654321");
+Query OK, 3 rows affected (0.01 sec)
+
+=========================================================================================
+
+
+insert into Orders values  (1,1,1,now(),1);
+Query OK, 1 row affected, 1 warning (0.06 sec)
+
+=========================================================================================
+
+mysql> select * from Product;
++-----+-------------+--------+----------+
+| PID | productName | Price  | Quantity |
++-----+-------------+--------+----------+
+|   1 | m1 air      |  60000 |       79 |
+|   2 | m2 air      |  90000 |       60 |
+|   3 | m3 air      | 110000 |      120 |
++-----+-------------+--------+----------+
+3 rows in set (0.00 sec)
+
+=========================================================================================
+
+mysql> select * from Orders;
++-----+------+------+------------+----------+
+| OID | CID  | PID  | date       | Quantity |
++-----+------+------+------------+----------+
+|   1 |    1 |    1 | 2025-03-26 |        1 |
++-----+------+------+------------+----------+
+1 row in set (0.01 sec)
+
+=========================================================================================
+
+mysql> select * from Customer;
++-----+---------+------------+
+| CID | Name    | PhoneNo    |
++-----+---------+------------+
+|   1 | Gowtham | 9080529427 |
+|   2 | Muthu   | 9952699870 |
+|   3 | Gopi    | 8907654321 |
++-----+---------+------------+
+3 rows in set (0.00 sec)
+
+=========================================================================================
+
+mysql> insert into Orders values  (2,3,1,now(),1);
+Query OK, 1 row affected, 1 warning (0.00 sec)
+
+=========================================================================================
+
+mysql> select * from Product;
++-----+-------------+--------+----------+
+| PID | productName | Price  | Quantity |
++-----+-------------+--------+----------+
+|   1 | m1 air      |  60000 |       78 |
+|   2 | m2 air      |  90000 |       60 |
+|   3 | m3 air      | 110000 |      120 |
++-----+-------------+--------+----------+
+3 rows in set (0.00 sec)
+
+=========================================================================================
+
+mysql> select * from Customer;
++-----+---------+------------+
+| CID | Name    | PhoneNo    |
++-----+---------+------------+
+|   1 | Gowtham | 9080529427 |
+|   2 | Muthu   | 9952699870 |
+|   3 | Gopi    | 8907654321 |
++-----+---------+------------+
+3 rows in set (0.00 sec)
+
+=========================================================================================
+
+mysql> select * from Orders;
++-----+------+------+------------+----------+
+| OID | CID  | PID  | date       | Quantity |
++-----+------+------+------------+----------+
+|   1 |    1 |    1 | 2025-03-26 |        1 |
+|   2 |    3 |    1 | 2025-03-26 |        1 |
++-----+------+------+------------+----------+
+2 rows in set (0.00 sec)
+
+=========================================================================================
+
+mysql> Truncate Orders;
+Query OK, 0 rows affected (0.04 sec)
+
+=========================================================================================
+
+mysql> alter table orders modify date datetime;
+Query OK, 0 rows affected (0.04 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+=========================================================================================
+
+mysql> insert into Orders values  (1,1,1,now(),1);
+Query OK, 1 row affected (0.00 sec)
+
+=========================================================================================
+
+mysql> insert into Orders values  (2,3,1,now(),1);
+Query OK, 1 row affected (0.00 sec)
+
+=========================================================================================
+
+mysql> select * from Orders;
++-----+------+------+---------------------+----------+
+| OID | CID  | PID  | date                | Quantity |
++-----+------+------+---------------------+----------+
+|   1 |    1 |    1 | 2025-03-26 12:53:30 |        1 |
+|   2 |    3 |    1 | 2025-03-26 12:53:34 |        1 |
++-----+------+------+---------------------+----------+
+2 rows in set (0.01 sec)
+
+=========================================================================================
+
+mysql> insert into Orders values  (3,1,2,Date_sub(now(),Interval 10 day),1);
+Query OK, 1 row affected (0.01 sec)
+
+=========================================================================================
+
+mysql> insert into Orders values  (4,1,3,Date_sub(now(),Interval 12 day),1);
+Query OK, 1 row affected (0.00 sec)
+
+=========================================================================================
+
+mysql> insert into Orders values  (5,2,3,Date_sub(now(),Interval 32 day),1);
+Query OK, 1 row affected (0.00 sec)
+
+=========================================================================================
+
+mysql> select * from Orders;
++-----+------+------+---------------------+----------+
+| OID | CID  | PID  | date                | Quantity |
++-----+------+------+---------------------+----------+
+|   1 |    1 |    1 | 2025-03-26 12:53:30 |        1 |
+|   2 |    3 |    1 | 2025-03-26 12:53:34 |        1 |
+|   3 |    1 |    2 | 2025-03-16 12:59:10 |        1 |
+|   4 |    1 |    3 | 2025-03-14 12:59:32 |        1 |
+|   5 |    2 |    3 | 2025-02-22 12:59:50 |        1 |
++-----+------+------+---------------------+----------+
+5 rows in set (0.00 sec)
+
+=========================================================================================
+
+mysql> select ProductName , price, Product.PID from Product join 
+(select PID, CID, Quantity,
+Date(Orders.date) as date ,
+Date_Add(Orders.date, interval 10 Day) as Delivery_date from Orders) 
+as T1 on Product.PID = T1.PID;
+
++-------------+--------+-----+
+| ProductName | price  | PID |
++-------------+--------+-----+
+| m1 air      |  60000 |   1 |
+| m1 air      |  60000 |   1 |
+| m2 air      |  90000 |   2 |
+| m3 air      | 110000 |   3 |
+| m3 air      | 110000 |   3 |
++-------------+--------+-----+
+5 rows in set (0.02 sec)
+
+=========================================================================================
+
+mysql> select ProductName , price, Product.PID from Product join 
+(select PID, CID, Quantity,
+Date(Orders.date) as date ,
+Date_Add(Orders.date, interval 10 Day) as Delivery_date from Orders) 
+as T1 on Product.PID = T1.PID;
++-------------+--------+-----+
+| ProductName | price  | PID |
++-------------+--------+-----+
+| m1 air      |  60000 |   1 |
+| m1 air      |  60000 |   1 |
+| m2 air      |  90000 |   2 |
+| m3 air      | 110000 |   3 |
+| m3 air      | 110000 |   3 |
++-------------+--------+-----+
+5 rows in set (0.01 sec)
+
+=========================================================================================
+
+select Name as Client ,productName as Item ,price, T2.Quantity, date as Order_date , 
+Delivery_date from Customer join
+( select ProductName ,price, Product.PID Quantity, date , Delivery_date,CID from Product join 
+(select PID, CID, Quantity,Date(Orders.date) as date ,Date_Add(Order
+s.date, interval 10 Day) as Delivery_date from Orders) as T1 on Product.PID = T1.PID) as T2 
+on Customer.CID = T2.CID;
+
++---------+--------+--------+----------+------------+---------------------+
+| Client  | Item   | price  | Quantity | Order_date | Delivery_date       |
++---------+--------+--------+----------+------------+---------------------+
+| Gowtham | m1 air |  60000 |        1 | 2025-03-26 | 2025-04-05 12:53:30 |
+| Gowtham | m2 air |  90000 |        2 | 2025-03-16 | 2025-03-26 12:59:10 |
+| Gowtham | m3 air | 110000 |        3 | 2025-03-14 | 2025-03-24 12:59:32 |
+| Muthu   | m3 air | 110000 |        3 | 2025-02-22 | 2025-03-04 12:59:50 |
+| Gopi    | m1 air |  60000 |        1 | 2025-03-26 | 2025-04-05 12:53:34 |
++---------+--------+--------+----------+------------+---------------------+
+5 rows in set (0.00 sec)
+
+=========================================================================================
+
+mysql> select Name as Client ,productName as Item ,price, T2.Quantity, 
+date as Order_date , Date(Delivery_date) from Customer join
+( select ProductName ,price, Product.PID Quantity, date , Delivery_date,CID from Product join 
+(select PID, CID, Quantity,Date(Orders.date) as date ,Date_Add
+(Orders.date, interval 10 Day) as Delivery_date from Orders) as T1 on Product.PID = T1.PID) 
+as T2 on Customer.CID = T2.CID;
+
++---------+--------+--------+----------+------------+---------------------+
+| Client  | Item   | price  | Quantity | Order_date | Date(Delivery_date) |
++---------+--------+--------+----------+------------+---------------------+
+| Gowtham | m1 air |  60000 |        1 | 2025-03-26 | 2025-04-05          |
+| Gowtham | m2 air |  90000 |        2 | 2025-03-16 | 2025-03-26          |
+| Gowtham | m3 air | 110000 |        3 | 2025-03-14 | 2025-03-24          |
+| Muthu   | m3 air | 110000 |        3 | 2025-02-22 | 2025-03-04          |
+| Gopi    | m1 air |  60000 |        1 | 2025-03-26 | 2025-04-05          |
++---------+--------+--------+----------+------------+---------------------+
+5 rows in set (0.00 sec)
+
+=========================================================================================
+
+mysql> select Name as Client ,productName as Item ,price, T2.Quantity, date as Order_date , 
+Date(Delivery_date) from Customer join 
+( select ProductName ,price, Product.PID Quantity, date , Delivery_date,CID from Product join 
+(select PID, CID, Quantity,Date(Orders.date) as date ,Date_Add(Orders.date, interval 10 Day) 
+as Delivery_date from Orders) as T1 on Product.PID = T1.PID) as 
+T2 on Customer.CID = T2.CID where date  >= Date_sub(now(), interval 30 day);
+
++---------+--------+--------+----------+------------+---------------------+
+| Client  | Item   | price  | Quantity | Order_date | Date(Delivery_date) |
++---------+--------+--------+----------+------------+---------------------+
+| Gowtham | m1 air |  60000 |        1 | 2025-03-26 | 2025-04-05          |
+| Gowtham | m2 air |  90000 |        2 | 2025-03-16 | 2025-03-26          |
+| Gowtham | m3 air | 110000 |        3 | 2025-03-14 | 2025-03-24          |
+| Gopi    | m1 air |  60000 |        1 | 2025-03-26 | 2025-04-05          |
++---------+--------+--------+----------+------------+---------------------+
+4 rows in set (0.01 sec)
+
+=========================================================================================
+
+mysql> select Name as Client ,productName as Item ,price, T2.Quantity, date as Order_date ,
+ Date(Delivery_date), datediff(now(),date) as Days_o
+rdered_since from Customer join( select ProductName ,price, 
+Product.PID Quantity, date , Delivery_date,CID from Product join 
+(select PID, CID,
+Quantity,Date(Orders.date) as date ,Date_Add(Orders.date, interval 10 Day) as Delivery_date from Orders) 
+as T1 on Product.PID = T1.PID) as T2 on Customer.CID = T2.CID where date  >= Date_sub(now(), interval 30 day);
++---------+--------+--------+----------+------------+---------------------+--------------------+
+| Client  | Item   | price  | Quantity | Order_date | Date(Delivery_date) | Days_ordered_since |
++---------+--------+--------+----------+------------+---------------------+--------------------+
+| Gowtham | m1 air |  60000 |        1 | 2025-03-26 | 2025-04-05          |                  0 |
+| Gowtham | m2 air |  90000 |        2 | 2025-03-16 | 2025-03-26          |                 10 |
+| Gowtham | m3 air | 110000 |        3 | 2025-03-14 | 2025-03-24          |                 12 |
+| Gopi    | m1 air |  60000 |        1 | 2025-03-26 | 2025-04-05          |                  0 |
++---------+--------+--------+----------+------------+---------------------+--------------------+
+4 rows in set (0.00 sec)
+
+=========================================================================================
+
+mysql> select PID,CID, DATE_FORMAT(Orders.date, '%d/%m/%Y') as ordered_date from Orders;
++------+------+--------------+
+| PID  | CID  | ordered_date |
++------+------+--------------+
+|    1 |    1 | 26/03/2025   |
+|    1 |    3 | 26/03/2025   |
+|    2 |    1 | 16/03/2025   |
+|    3 |    1 | 14/03/2025   |
+|    3 |    2 | 22/02/2025   |
++------+------+--------------+
+5 rows in set (0.05 sec)
+
+=========================================================================================
+
+mysql> select PID,CID, DATE_FORMAT(Orders.date, '%d-%b-%Y') as ordered_date from Orders;
++------+------+--------------+
+| PID  | CID  | ordered_date |
++------+------+--------------+
+|    1 |    1 | 26-Mar-2025  |
+|    1 |    3 | 26-Mar-2025  |
+|    2 |    1 | 16-Mar-2025  |
+|    3 |    1 | 14-Mar-2025  |
+|    3 |    2 | 22-Feb-2025  |
++------+------+--------------+
+5 rows in set (0.04 sec)
+
+=========================================================================================
