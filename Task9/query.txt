@@ -1,0 +1,41 @@
+mysql> create function dicount (price Int , percent Int) returns int deterministic begin  return price * (percent/100); end $$
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> delimiter ;
+mysql> select dicount (100,20);
++------------------+
+| dicount (100,20) |
++------------------+
+|               20 |
++------------------+
+1 row in set (0.02 sec)
+
+mysql> select dicount (1023,20);
++-------------------+
+| dicount (1023,20) |
++-------------------+
+|               205 |
++-------------------+
+1 row in set (0.00 sec)
+
+================================================================================================================================
+
+mysql> delimiter $$
+mysql> create procedure sales ( IN Sdate Date , IN Edate Date)  Begin  Select productName , sum(orders.Quantity * Price)
+from orders Join Product on Product.PID = orders.PID where Date(orders.date) between Sdate and Edate group by 
+Product.PID ;  end$$
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> delimiter ;
+mysql> call sales('2025-03-01','2025-03-30');
++-------------+------------------------------+
+| productName | sum(orders.Quantity * Price) |
++-------------+------------------------------+
+| m1 air      |                       120000 |
+| m2 air      |                        90000 |
+| m3 air      |                       110000 |
++-------------+------------------------------+
+3 rows in set (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+================================================================================================================================
