@@ -1,0 +1,79 @@
+
+mysql> create table employeedetails (
+    ->     employeeid int primary key,
+    ->     firstname varchar(50),
+    ->     lastname varchar(50),
+    ->     department varchar(50),
+    ->     managerid int null,
+    ->     foreign key (managerid) references employeedetails(employeeid)
+    -> );
+Query OK, 0 rows affected (0.06 sec)
+
+=========================================================================================================
+
+mysql> insert into employeedetails (employeeid, firstname, lastname, department, managerid) values
+    -> (1, 'amit', 'singh', 'it', null), 
+    -> (5, 'vijay', 'singh', 'finance', null),
+    -> (7, 'rahul', 'mishra', 'finance', 5),
+    -> (8, 'asha', 'verma', 'it', 1),
+    -> (9, 'suman', 'das', 'hr', null),
+    -> (10, 'karan', 'gupta', 'it', 1),
+    -> (11, 'deepak', 'sharma', 'finance', 5),
+    -> (12, 'pooja', 'yadav', 'hr', 9),
+    -> (13, 'neha', 'rao', 'it', 1),
+    -> (14, 'ravi', 'patel', 'finance', 5),
+    -> (15, 'suresh', 'nair', 'it', 8),
+    -> (16, 'manish', 'kumar', 'hr', 9),
+    -> (17, 'ankita', 'joshi', 'finance', 11),
+    -> (18, 'rohit', 'shah', 'it', 10),
+    -> (19, 'shivani', 'mehta', 'hr', 12),
+    -> (20, 'arjun', 'malhotra', 'finance', 14);
+Query OK, 16 rows affected (0.01 sec)
+Records: 16  Duplicates: 0  Warnings: 0
+
+=========================================================================================================
+
+with RECURSIVE rte as  (  select employeeid, firstname, lastname, department, managerid from employeedetails where managerid is  null  u
+nion all 
+id ) select * from rte;
++------------+-----------+----------+------------+-----------+
+| employeeid | firstname | lastname | department | managerid |
++------------+-----------+----------+------------+-----------+
+|          1 | amit      | singh    | it         |      NULL |
+|          5 | vijay     | singh    | finance    |      NULL |
+|          9 | suman     | das      | hr         |      NULL |
+|          8 | asha      | verma    | it         |         1 |
+|         10 | karan     | gupta    | it         |         1 |
+|         13 | neha      | rao      | it         |         1 |
+|          7 | rahul     | mishra   | finance    |         5 |
+|         11 | deepak    | sharma   | finance    |         5 |
+|         14 | ravi      | patel    | finance    |         5 |
+|         12 | pooja     | yadav    | hr         |         9 |
+|         16 | manish    | kumar    | hr         |         9 |
+|         15 | suresh    | nair     | it         |         8 |
+|         18 | rohit     | shah     | it         |        10 |
+|         17 | ankita    | joshi    | finance    |        11 |
+|         20 | arjun     | malhotra | finance    |        14 |
+|         19 | shivani   | mehta    | hr         |        12 |
++------------+-----------+----------+------------+-----------+
+
+
+=========================================================================================================
+
+with rankedemployees as  (select  name , department, salary , Dense_Rank() over (partition by department order by salary desc) as empran
+k from employees) select name, department ,salary , emprank , salary - lead(salary) over ( partition by department order by emprank) as Salary_
+diff from rankedemployees;
++---------+------------+----------+---------+-------------+
+| name    | department | salary   | emprank | Salary_diff |
++---------+------------+----------+---------+-------------+
+| eve     | cse        | 95000.00 |       1 |    10000.00 |
+| frank   | cse        | 85000.00 |       2 |        0.00 |
+| grace   | cse        | 85000.00 |       2 |    15000.00 |
+| helen   | cse        | 70000.00 |       3 |        NULL |
+| alice   | it         | 90000.00 |       1 |    15000.00 |
+| bob     | it         | 75000.00 |       2 |        0.00 |
+| charlie | it         | 75000.00 |       2 |    15000.00 |
+| david   | it         | 60000.00 |       3 |        NULL |
++---------+------------+----------+---------+-------------+
+
+=========================================================================================================
