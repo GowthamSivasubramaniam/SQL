@@ -1,0 +1,103 @@
+Create table employees (
+    ->     employeeid int primary key auto_increment,
+    ->     name varchar(50) not null,
+    ->     department varchar(50) not null,
+    ->     salary decimal(10,2) not null
+    -> );
+=========================================================================================
+insert into employees (name, department, salary) values 
+('alice', 'it', 90000),
+('bob', 'it', 75000),
+('charlie', 'it', 75000),
+('david', 'it', 60000),
+('eve', 'cse', 95000),
+('frank', 'cse', 85000),
+('grace', 'cse', 85000),
+('helen', 'cse', 70000);
+Query OK, 0 rows affected (0.07 sec)
+
+=========================================================================================
+
+mysql> select * from employees;
++------------+---------+------------+----------+
+| employeeid | name    | department | salary   |
++------------+---------+------------+----------+
+|          1 | alice   | it         | 90000.00 |
+|          2 | bob     | it         | 75000.00 |
+|          3 | charlie | it         | 75000.00 |
+|          4 | david   | it         | 60000.00 |
+|          5 | eve     | cse        | 95000.00 |
+|          6 | frank   | cse        | 85000.00 |
+|          7 | grace   | cse        | 85000.00 |
+|          8 | helen   | cse        | 70000.00 |
++------------+---------+------------+----------+
+8 rows in set (0.01 sec)
+
+=========================================================================================
+mysql> select name,department, salary , Rank() over (partition by department order by salary desc ) as EmployeeRank from employees ;
++---------+------------+----------+--------------+
+| name    | department | salary   | EmployeeRank |
++---------+------------+----------+--------------+
+| eve     | cse        | 95000.00 |            1 |
+| frank   | cse        | 85000.00 |            2 |
+| grace   | cse        | 85000.00 |            2 |
+| helen   | cse        | 70000.00 |            4 |
+| alice   | it         | 90000.00 |            1 |
+| bob     | it         | 75000.00 |            2 |
+| charlie | it         | 75000.00 |            2 |
+| david   | it         | 60000.00 |            4 |
++---------+------------+----------+--------------+
+8 rows in set (0.01 sec)
+
+
+=========================================================================================
+mysql> select name,department, salary , dense_Rank() over (partition by department order by salary desc ) as EmployeeRank from employees ;
++---------+------------+----------+--------------+
+| name    | department | salary   | EmployeeRank |
++---------+------------+----------+--------------+
+| eve     | cse        | 95000.00 |            1 |
+| frank   | cse        | 85000.00 |            2 |
+| grace   | cse        | 85000.00 |            2 |
+| helen   | cse        | 70000.00 |            3 |
+| alice   | it         | 90000.00 |            1 |
+| bob     | it         | 75000.00 |            2 |
+| charlie | it         | 75000.00 |            2 |
+| david   | it         | 60000.00 |            3 |
++---------+------------+----------+--------------+
+8 rows in set (0.00 sec)
+
+=========================================================================================
+mysql> select name,department, salary , Row_number() over (partition by department order by salary desc ) as EmployeeRank from employees ;
++---------+------------+----------+--------------+
+| name    | department | salary   | EmployeeRank |
++---------+------------+----------+--------------+
+| eve     | cse        | 95000.00 |            1 |
+| frank   | cse        | 85000.00 |            2 |
+| grace   | cse        | 85000.00 |            3 |
+| helen   | cse        | 70000.00 |            4 |
+| alice   | it         | 90000.00 |            1 |
+| bob     | it         | 75000.00 |            2 |
+| charlie | it         | 75000.00 |            3 |
+| david   | it         | 60000.00 |            4 |
++---------+------------+----------+--------------+
+8 rows in set (0.00 sec)
+=========================================================================================
+
+mysql> with rankedemployees as  (select  name , department, salary , Dense_Rank() over (partition by department order by salary desc) as empran
+k from employees) select name, department ,salary , emprank , salary - lead(salary) over ( partition by department order by emprank) as Salary_
+diff from rankedemployees;
++---------+------------+----------+---------+-------------+
+| name    | department | salary   | emprank | Salary_diff |
++---------+------------+----------+---------+-------------+
+| eve     | cse        | 95000.00 |       1 |    10000.00 |
+| frank   | cse        | 85000.00 |       2 |        0.00 |
+| grace   | cse        | 85000.00 |       2 |    15000.00 |
+| helen   | cse        | 70000.00 |       3 |        NULL |
+| alice   | it         | 90000.00 |       1 |    15000.00 |
+| bob     | it         | 75000.00 |       2 |        0.00 |
+| charlie | it         | 75000.00 |       2 |    15000.00 |
+| david   | it         | 60000.00 |       3 |        NULL |
++---------+------------+----------+---------+-------------+
+8 rows in set (0.00 sec)
+
+=========================================================================================
