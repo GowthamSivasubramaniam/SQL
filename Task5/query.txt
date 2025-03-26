@@ -1,0 +1,54 @@
+
+select * from marks where Marks > (select avg(Marks) from  marks);
++----------+---------+-------+
+| rollno   | Subject | Marks |
++----------+---------+-------+
+| 21CSR058 | maths   |   100 |
+| 21CSR058 | cs      |   100 |
+| 21CSR058 | DS      |   100 |
+| 21CSR120 | maths   |   100 |
+| 21CSR120 | cs      |   100 |
++----------+---------+-------+
+5 rows in set (0.05 sec)
+
+================================================================================
+
+select Subject,avg(Marks) as Average from  marks  group by Subject;
++---------+----------+
+| Subject | Average  |
++---------+----------+
+| maths   | 100.0000 |
+| cs      | 100.0000 |
+| physics |  95.5000 |
+| DBMS    |  98.0000 |
+| DS      | 100.0000 |
++---------+----------+
+5 rows in set (0.01 sec)
+
+================================================================================
+
+ select * from marks as T1 where Marks > (select avg(Marks) from  marks as T2 where T1.Subject = T2.Subject);
++----------+---------+-------+
+| rollno   | Subject | Marks |
++----------+---------+-------+
+| 21CSR058 | physics |    97 |
++----------+---------+-------+
+1 row in set (0.01 sec)
+
+================================================================================
+
+select * from marks as T1 where Marks >= (select avg(Marks) from  marks as T2 where T1.Subject = T2.Subject);
++----------+---------+-------+
+| rollno   | Subject | Marks |
++----------+---------+-------+
+| 21CSR058 | maths   |   100 |
+| 21CSR058 | cs      |   100 |
+| 21CSR058 | physics |    97 |
+| 21CSR058 | DBMS    |    98 |
+| 21CSR058 | DS      |   100 |
+| 21CSR120 | maths   |   100 |
+| 21CSR120 | cs      |   100 |
++----------+---------+-------+
+7 rows in set (0.00 sec)
+
+================================================================================
