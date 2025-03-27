@@ -1,0 +1,287 @@
+
+create table Orders ( OID int Primary Key , CID int , PID int , date Date);
+Query OK, 0 rows affected (0.02 sec)
+
+=========================================================================================
+
+create table Product ( PID int primary key , productName varchar(10) , Price int);
+Query OK, 0 rows affected (0.01 sec)
+
+=========================================================================================
+
+Alter table Product add Quantity int;
+Query OK, 0 rows affected (0.01 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+=========================================================================================
+
+Alter table Orders add constraint  Foreign key (CID)  References Customer(CID);
+Query OK, 0 rows affected (0.06 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+=========================================================================================
+
+Alter table Orders add constraint  Foreign key (PID)  References Product (PID);
+Query OK, 0 rows affected (0.03 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+=========================================================================================
+
+Alter table Orders  add Quantity int;
+Query OK, 0 rows affected (0.05 sec)
+
+=========================================================================================
+
+mysql> insert into Product values 
+    -> (1, "m1 air" ,60000,80),
+    -> (2, "m2 air" ,90000,60),
+    -> (3, "m3 air" ,110000,120);
+Query OK, 3 rows affected (0.01 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+=========================================================================================
+
+mysql> insert into customer values
+    -> (1,"Gowtham","9080529427"),
+    -> (2,"Muthu","9952699870"),
+    -> (3,"Gopi","8907654321");
+Query OK, 3 rows affected (0.01 sec)
+
+
+
+
+create trigger check_quantity  
+before insert on orders  
+for each row  
+begin  
+    declare qty int;  
+    select Quantity into qty from Product where Product.PID = new.PID;  
+    if qty < new.Quantity then  
+        signal sqlstate '45000'  
+        set message_text = 'out of stock';  
+    end if;  
+end;
+Query OK, 0 rows affected (0.05 sec)
+
+===========================================================================================
+
+mysql> DELIMITER ;
+mysql> select * from orders;
++-----+------+------+---------------------+----------+
+| OID | CID  | PID  | date                | Quantity |
++-----+------+------+---------------------+----------+
+|   1 |    1 |    1 | 2025-03-26 12:53:30 |        1 |
+|   2 |    3 |    1 | 2025-03-26 12:53:34 |        1 |
+|   3 |    1 |    2 | 2025-03-16 12:59:10 |        1 |
+|   4 |    1 |    3 | 2025-03-14 12:59:32 |        1 |
+|   5 |    2 |    3 | 2025-02-22 12:59:50 |        1 |
++-----+------+------+---------------------+----------+
+5 rows in set (0.01 sec)
+===========================================================================================
+
+mysql> select * from product;
++-----+-------------+--------+----------+
+| PID | productName | Price  | Quantity |
++-----+-------------+--------+----------+
+|   1 | m1 air      |  60000 |       76 |
+|   2 | m2 air      |  90000 |       59 |
+|   3 | m3 air      | 110000 |      118 |
++-----+-------------+--------+----------+
+3 rows in set (0.00 sec)
+
+===========================================================================================
+
+mysql> insert into orders values(6,1,1,now(),77
+    -> );
+ERROR 1644 (45000): Out of stock
+mysql> select * from orders;
++-----+------+------+---------------------+----------+
+| OID | CID  | PID  | date                | Quantity |
++-----+------+------+---------------------+----------+
+|   1 |    1 |    1 | 2025-03-26 12:53:30 |        1 |
+|   2 |    3 |    1 | 2025-03-26 12:53:34 |        1 |
+|   3 |    1 |    2 | 2025-03-16 12:59:10 |        1 |
+|   4 |    1 |    3 | 2025-03-14 12:59:32 |        1 |
+|   5 |    2 |    3 | 2025-02-22 12:59:50 |        1 |
++-----+------+------+---------------------+----------+
+5 rows in set (0.00 sec)
+
+mysql> select * from product;
++-----+-------------+--------+----------+
+| PID | productName | Price  | Quantity |
++-----+-------------+--------+----------+
+|   1 | m1 air      |  60000 |       76 |
+|   2 | m2 air      |  90000 |       59 |
+|   3 | m3 air      | 110000 |      118 |
++-----+-------------+--------+----------+
+3 rows in set (0.00 sec)
+===========================================================================================
+
+mysql> Start Transaction;
+Query OK, 0 rows affected (0.00 sec)
+
+
+mysql> create procedure checkqty ( IN qty int) begin declare productqty int ; 
+select Quantity into productqty from Product where PID=1; if qty > productqty then  
+rollback ; end if; end;$$
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> call checkqty (70);
+    -> $$
+Query OK, 0 rows affected (0.01 sec)
+===========================================================================================
+mysql> select * from orders;
+    -> $$
++-----+------+------+---------------------+----------+
+| OID | CID  | PID  | date                | Quantity |
++-----+------+------+---------------------+----------+
+|   1 |    1 |    1 | 2025-03-26 12:53:30 |        1 |
+|   2 |    3 |    1 | 2025-03-26 12:53:34 |        1 |
+|   3 |    1 |    2 | 2025-03-16 12:59:10 |        1 |
+|   4 |    1 |    3 | 2025-03-14 12:59:32 |        1 |
+|   5 |    2 |    3 | 2025-02-22 12:59:50 |        1 |
+|   6 |    1 |    1 | 2025-03-27 09:43:20 |       73 |
++-----+------+------+---------------------+----------+
+6 rows in set (0.00 sec)
+===========================================================================================
+mysql> start transaction
+    -> delimiter ;
+    -> $$
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'delimiter' at line 2
+mysql> start transaction;
+    -> $$
+Query OK, 0 rows affected (0.00 sec)
+===========================================================================================
+mysql> delimiter ;
+mysql> start transaction;
+Query OK, 0 rows affected (0.01 sec)
+===========================================================================================
+
+mysql> insert into product values (4,"m1 pr",2000000,120);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> rollback;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> select * from Product;
++-----+-------------+--------+----------+
+| PID | productName | Price  | Quantity |
++-----+-------------+--------+----------+
+|   1 | m1 air      |  60000 |        3 |
+|   2 | m2 air      |  90000 |       59 |
+|   3 | m3 air      | 110000 |      118 |
++-----+-------------+--------+----------+
+3 rows in set (0.00 sec)
+mysql> savepoint s1;
+Query OK, 0 rows affected (0.00 sec)
+
+===========================================================================================
+
+mysql> insert into Product values (4,"m1 pro",200000,23);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from Product;
++-----+-------------+--------+----------+
+| PID | productName | Price  | Quantity |
++-----+-------------+--------+----------+
+|   1 | m1 air      |  60000 |        3 |
+|   2 | m2 air      |  90000 |       59 |
+|   3 | m3 air      | 110000 |      118 |
+|   4 | m1 pro      | 200000 |       23 |
++-----+-------------+--------+----------+
+4 rows in set (0.00 sec)
+
+===========================================================================================
+
+mysql> rollback to savepoint s1;
+ERROR 1305 (42000): SAVEPOINT s1 does not exist
+
+===========================================================================================
+
+mysql> start transaction  ;
+Query OK, 0 rows affected (0.00 sec)
+
+===========================================================================================
+
+mysql> insert into Product values (5,"m2 pro",200000,23);
+Query OK, 1 row affected (0.02 sec)
+
+===========================================================================================
+
+mysql> savepoint s1;
+Query OK, 0 rows affected (0.00 sec)
+
+===========================================================================================
+
+mysql> insert into Product values (6,"m3 pro",200000,23);
+Query OK, 1 row affected (0.00 sec)
+
+===========================================================================================
+
+mysql> rollback to savepoint s1;
+Query OK, 0 rows affected (0.01 sec)
+
+===========================================================================================
+
+mysql> select * from Product;
++-----+-------------+--------+----------+
+| PID | productName | Price  | Quantity |
++-----+-------------+--------+----------+
+|   1 | m1 air      |  60000 |        3 |
+|   2 | m2 air      |  90000 |       59 |
+|   3 | m3 air      | 110000 |      118 |
+|   4 | m1 pro      | 200000 |       23 |
+|   5 | m2 pro      | 200000 |       23 |
++-----+-------------+--------+----------+
+5 rows in set (0.01 sec)
+
+===========================================================================================
+
+mysql> commit ;
+Query OK, 0 rows affected (0.01 sec)
+
+===========================================================================================
+mysql> create view order_summary as select Name as Client ,productName as Item ,price, T2.Quantity, date as Order_date , 
+    -> Date(Delivery_date) from Customer join 
+    -> ( select ProductName ,price, Product.PID Quantity, date , Delivery_date,CID from Product join 
+    -> (select PID, CID, Quantity,Date(Orders.date) as date ,Date_Add(Orders.date, interval 10 Day) 
+    -> as Delivery_date from Orders) as T1 on Product.PID = T1.PID) as 
+    -> T2 on Customer.CID = T2.CID where date  >= Date_sub(now(), interval 30 day);
+Query OK, 0 rows affected (0.04 sec)
+
+===========================================================================================
+
+mysql> select * from order_summary;
++---------+--------+--------+----------+------------+---------------------+
+| Client  | Item   | price  | Quantity | Order_date | Date(Delivery_date) |
++---------+--------+--------+----------+------------+---------------------+
+| Gowtham | m1 air |  60000 |        1 | 2025-03-26 | 2025-04-05          |
+| Gopi    | m1 air |  60000 |        1 | 2025-03-26 | 2025-04-05          |
+| Gowtham | m1 air |  60000 |        1 | 2025-03-27 | 2025-04-06          |
+| Gowtham | m2 air |  90000 |        2 | 2025-03-16 | 2025-03-26          |
+| Gowtham | m3 air | 110000 |        3 | 2025-03-14 | 2025-03-24          |
++---------+--------+--------+----------+------------+---------------------+
+5 rows in set (0.00 sec)
+
+===========================================================================================
+
+mysql> EXPLAIN SELECT * FROM orders WHERE date BETWEEN '2024-01-01' AND '2024-12-31';
++----+-------------+--------+------------+------+---------------+------+---------+------+------+----------+-------------+
+| id | select_type | table  | partitions | type | possible_keys | key  | key_len | ref  | rows | filtered | Extra       |
++----+-------------+--------+------------+------+---------------+------+---------+------+------+----------+-------------+
+|  1 | SIMPLE      | orders | NULL       | ALL  | NULL          | NULL | NULL    | NULL |    5 |    20.00 | Using where |
++----+-------------+--------+------------+------+---------------+------+---------+------+------+----------+-------------+
+1 row in set, 1 warning (0.05 sec)
+
+mysql> CREATE INDEX idx_orders_date ON orders(date);
+Query OK, 0 rows affected (0.09 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> EXPLAIN SELECT * FROM orders WHERE date BETWEEN '2024-01-01' AND '2024-12-31';
++----+-------------+--------+------------+-------+-----------------+-----------------+---------+------+------+----------+-----------------------+
+| id | select_type | table  | partitions | type  | possible_keys   | key             | key_len | ref  | rows | filtered | Extra                 |
++----+-------------+--------+------------+-------+-----------------+-----------------+---------+------+------+----------+-----------------------+
+|  1 | SIMPLE      | orders | NULL       | range | idx_orders_date | idx_orders_date | 6       | NULL |    1 |   100.00 | Using index condition |
++----+-------------+--------+------------+-------+-----------------+-----------------+---------+------+------+----------+-----------------------+
+
+===========================================================================================
